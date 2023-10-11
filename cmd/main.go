@@ -10,13 +10,13 @@ import (
 	"github.com/go-ole/go-ole"
 )
 
-func exit() {
-	fmt.Println("press enter to exit.")
+func exit(code int) {
+	fmt.Print("\npress enter to exit...")
 
 	var dumInput string
 	fmt.Scanln(&dumInput)
 
-	os.Exit(0)
+	os.Exit(code)
 }
 
 func main() {
@@ -27,25 +27,25 @@ func main() {
 
 	if err := sg.ReadInput(); err != nil {
 		log.Printf("invalid input types: %v\n", err)
-		exit()
+		exit(1)
 	}
 
 	if !sg.IsValid() {
 		log.Println("invalid input values")
-		exit()
+		exit(1)
 	}
 
 	w := app.NewWriter(sg.MatchRanges())
 
 	if err := w.WriteReport(); err != nil {
 		log.Printf("something went error while writing report: %v\n", err)
-		exit()
+		exit(1)
 	}
 
 	if err := w.WriteSecretNumbers(); err != nil {
 		log.Printf("something went error while writing secret numbers: %v\n", err)
-		exit()
+		exit(1)
 	}
 
-	exit()
+	exit(0)
 }

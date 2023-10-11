@@ -3,7 +3,6 @@ package main
 import (
 	_ "embed"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/Omar622/secret-generator/app"
@@ -26,24 +25,24 @@ func main() {
 	sg := app.NewSecretGenerator()
 
 	if err := sg.ReadInput(); err != nil {
-		log.Printf("invalid input types: %v\n", err)
+		fmt.Printf("invalid input types: %v\n", err)
 		exit(1)
 	}
 
 	if !sg.IsValid() {
-		log.Println("invalid input values")
+		fmt.Println("invalid input values")
 		exit(1)
 	}
 
 	w := app.NewWriter(sg.MatchRanges())
 
 	if err := w.WriteReport(); err != nil {
-		log.Printf("something went error while writing report: %v\n", err)
+		fmt.Printf("something went error while writing report: %v\n", err)
 		exit(1)
 	}
 
 	if err := w.WriteSecretNumbers(); err != nil {
-		log.Printf("something went error while writing secret numbers: %v\n", err)
+		fmt.Printf("something went error while writing secret numbers: %v\n", err)
 		exit(1)
 	}
 

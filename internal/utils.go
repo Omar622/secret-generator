@@ -2,14 +2,18 @@ package internal
 
 import (
 	"fmt"
+	"strconv"
 )
 
 // ReadUInt read unsigned integer from stdin
 func ReadUInt(lineToPrint string) (uint, error) {
-	var input uint
+	var inputStr string
 
 	fmt.Print(lineToPrint)
-	_, err := fmt.Scanln(&input)
+	if _, err := fmt.Scanln(&inputStr); err != nil {
+		return 0, err
+	}
 
-	return input, err
+	inputUInt, err := strconv.Atoi(inputStr)
+	return uint(inputUInt), err
 }

@@ -2,11 +2,22 @@ package main
 
 import (
 	_ "embed"
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/Omar622/secret-generator/app"
 	"github.com/go-ole/go-ole"
 )
+
+func exit() {
+	fmt.Println("press enter to exit.")
+
+	var dumInput string
+	fmt.Scanln(&dumInput)
+
+	os.Exit(0)
+}
 
 func main() {
 	ole.CoInitialize(0)
@@ -15,20 +26,26 @@ func main() {
 	sg := app.NewSecretGenerator()
 
 	if err := sg.ReadInput(); err != nil {
-		log.Fatalf("invalid input types: %v\n", err)
+		log.Printf("invalid input types: %v\n", err)
+		exit()
 	}
 
 	if !sg.IsValid() {
-		log.Fatal("invalid input values\n")
+		log.Println("invalid input values")
+		exit()
 	}
 
 	w := app.NewWriter(sg.MatchRanges())
 
 	if err := w.WriteReport(); err != nil {
-		log.Fatalf("something went error while writing report: %v\n", err)
+		log.Printf("something went error while writing report: %v\n", err)
+		exit()
 	}
 
 	if err := w.WriteSecretNumbers(); err != nil {
-		log.Fatalf("something went error while writing secret numbers: %v\n", err)
+		log.Printf("something went error while writing secret numbers: %v\n", err)
+		exit()
 	}
+
+	exit()
 }

@@ -93,9 +93,9 @@ func (sg *SecretGenerator) generateMatchingRanges() []internal.MatchingRange {
 
 	for i := sg.settingNumberRange.Start; i < sg.settingNumberRange.End; i += 50 {
 		if i%100 == 1 {
-			settingNumberRanges01 = append(settingNumberRanges01, internal.Range{Start: i, End: i + 50})
+			settingNumberRanges01 = append(settingNumberRanges01, internal.Range{Start: i, End: i + 49})
 		} else {
-			settingNumberRanges51 = append(settingNumberRanges51, internal.Range{Start: i, End: i + 50})
+			settingNumberRanges51 = append(settingNumberRanges51, internal.Range{Start: i, End: i + 49})
 		}
 	}
 
@@ -104,9 +104,9 @@ func (sg *SecretGenerator) generateMatchingRanges() []internal.MatchingRange {
 
 	for i := sg.secretNumberRange.Start; i < sg.secretNumberRange.End; i += 50 {
 		if i%100 == 1 {
-			secretNumberRanges01 = append(secretNumberRanges01, internal.Range{Start: i, End: i + 50})
+			secretNumberRanges01 = append(secretNumberRanges01, internal.Range{Start: i, End: i + 49})
 		} else {
-			secretNumberRanges51 = append(secretNumberRanges51, internal.Range{Start: i, End: i + 50})
+			secretNumberRanges51 = append(secretNumberRanges51, internal.Range{Start: i, End: i + 49})
 		}
 	}
 

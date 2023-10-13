@@ -24,13 +24,13 @@ type SecretGenerator struct {
 func (sg *SecretGenerator) ReadInput() error {
 	var err error
 
-	if sg.settingNumberRange.Start, err = internal.ReadUInt("enter the Start setting number: "); err != nil {
+	if sg.settingNumberRange.Start, err = internal.ReadUInt("enter the start setting number: "); err != nil {
 		return err
 	}
 	if sg.settingNumberRange.End, err = internal.ReadUInt("enter the last setting number: "); err != nil {
 		return err
 	}
-	if sg.secretNumberRange.Start, err = internal.ReadUInt("enter the Start secret number: "); err != nil {
+	if sg.secretNumberRange.Start, err = internal.ReadUInt("enter the start secret number: "); err != nil {
 		return err
 	}
 	if sg.secretNumberRange.End, err = internal.ReadUInt("enter the last secret number: "); err != nil {

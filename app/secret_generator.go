@@ -42,25 +42,25 @@ func (sg *SecretGenerator) ReadInput() error {
 
 // IsValid check input validity to generate matching
 func (sg *SecretGenerator) IsValid() bool {
-	if sg.settingNumberRange.Start%50 != 1 || sg.settingNumberRange.End%50 != 0 ||
+	if sg.settingNumberRange.Start%100 != 1 || sg.settingNumberRange.End%100 != 0 ||
 		sg.settingNumberRange.Start > sg.settingNumberRange.End {
 		return false
 	}
 
-	if sg.secretNumberRange.Start%50 != 1 || sg.secretNumberRange.End%50 != 0 ||
+	if sg.secretNumberRange.Start%100 != 1 || sg.secretNumberRange.End%100 != 0 ||
 		sg.secretNumberRange.Start > sg.secretNumberRange.End {
 		return false
 	}
 
-	settingMatchingRangesCount := (sg.settingNumberRange.End - sg.settingNumberRange.Start + 1) / 50
-	secretMatchingRangesCount := (sg.secretNumberRange.End - sg.secretNumberRange.Start + 1) / 50
+	settingMatchingRangesCount := sg.settingNumberRange.Count() / 50
+	secretMatchingRangesCount := sg.secretNumberRange.Count() / 50
 
 	if secretMatchingRangesCount < settingMatchingRangesCount {
 		return false
 	}
 
-	if secretMatchingRangesCount == settingMatchingRangesCount &&
-		sg.settingNumberRange.Start%100 != sg.secretNumberRange.Start%100 {
+	if sg.settingNumberRange.Count() >= 500 &&
+		(sg.settingNumberRange.Count()%500 != 0 || sg.secretNumberRange.Count()%500 != 0) {
 		return false
 	}
 
@@ -86,8 +86,57 @@ func (sg *SecretGenerator) MatchRanges() []internal.MatchingRange {
 	return matchingRanges
 }
 
+func (sg *SecretGenerator) getRandomRanges(size, count uint) []internal.Range {
+	ranges := []internal.Range{}
+
+	for i := sg.secretNumberRange.Start; i < sg.secretNumberRange.End; i += size {
+		ranges = append(ranges, internal.Range{Start: i, End: i + size - 1})
+	}
+
+	ranges = internal.Shuffle(ranges, sg.rnd)
+
+	return ranges[:count]
+}
+
+func (sg *SecretGenerator) split50(ranges []internal.Range) []internal.Range {
+	ranges50 := []internal.Range{}
+
+	for _, r := range ranges {
+		for i := r.Start; i < r.End; i += 50 {
+			ranges50 = append(ranges50, internal.Range{Start: i, End: i + 49})
+		}
+	}
+
+	return ranges50
+}
+
 func (sg *SecretGenerator) generateMatchingRanges() []internal.MatchingRange {
-	// split ranges to ranges of size 50
+	// get random 500s and split them by 50
+	var ranges50 []internal.Range
+
+	if sg.settingNumberRange.Count() < 500 {
+		ranges50 = sg.split50(sg.getRandomRanges(sg.settingNumberRange.Count(), 1))
+	} else {
+		ranges50 = sg.split50(sg.getRandomRanges(500, sg.settingNumberRange.Count()/500))
+	}
+
+	// classify secret ranges
+	secretNumberRanges01 := []internal.Range{}
+	secretNumberRanges51 := []internal.Range{}
+
+	for _, r := range ranges50 {
+		if r.Start%100 == 1 {
+			secretNumberRanges01 = append(secretNumberRanges01, r)
+		} else {
+			secretNumberRanges51 = append(secretNumberRanges51, r)
+		}
+	}
+
+	// shuffle secret ranges
+	internal.Shuffle(secretNumberRanges01, sg.rnd)
+	internal.Shuffle(secretNumberRanges51, sg.rnd)
+
+	// split & classify setting ranges to ranges of size 50
 	settingNumberRanges01 := []internal.Range{}
 	settingNumberRanges51 := []internal.Range{}
 
@@ -98,21 +147,6 @@ func (sg *SecretGenerator) generateMatchingRanges() []internal.MatchingRange {
 			settingNumberRanges51 = append(settingNumberRanges51, internal.Range{Start: i, End: i + 49})
 		}
 	}
-
-	secretNumberRanges01 := []internal.Range{}
-	secretNumberRanges51 := []internal.Range{}
-
-	for i := sg.secretNumberRange.Start; i < sg.secretNumberRange.End; i += 50 {
-		if i%100 == 1 {
-			secretNumberRanges01 = append(secretNumberRanges01, internal.Range{Start: i, End: i + 49})
-		} else {
-			secretNumberRanges51 = append(secretNumberRanges51, internal.Range{Start: i, End: i + 49})
-		}
-	}
-
-	// shuffle
-	internal.Shuffle(secretNumberRanges01, sg.rnd)
-	internal.Shuffle(secretNumberRanges51, sg.rnd)
 
 	// match
 	matchingRanges := []internal.MatchingRange{}

@@ -15,6 +15,9 @@ type Access struct {
 }
 
 func (a *Access) createMdb(dbFilePath string) error {
+	ole.CoInitialize(0)
+	defer ole.CoUninitialize()
+
 	unk, err := oleutil.CreateObject("ADOX.Catalog")
 	if err != nil {
 		return err

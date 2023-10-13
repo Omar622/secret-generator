@@ -21,6 +21,11 @@ func (r *Range) Compare(other Range) int {
 	return 2
 }
 
+// Count get the number in the range
+func (r *Range) Count() uint {
+	return r.End - r.Start + 1
+}
+
 // String convert Range to string
 func (r *Range) String() string {
 	return fmt.Sprintf("(%v : %v)", r.Start, r.End)

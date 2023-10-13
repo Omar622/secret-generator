@@ -3,7 +3,6 @@ package app
 import (
 	_ "embed"
 	"fmt"
-	"time"
 
 	"github.com/Omar622/secret-generator/internal"
 )
@@ -31,9 +30,13 @@ type Writer struct {
 	matchingRanges  []internal.MatchingRange
 }
 
+func (w *Writer) Append(mr []internal.MatchingRange) {
+	w.matchingRanges = append(w.matchingRanges, mr...)
+}
+
 // WriteReport write report in microsoft access file
 func (w *Writer) WriteReport() error {
-	filePath := fmt.Sprintf("./report-%v.mdb", time.Now().UnixNano())
+	filePath := fmt.Sprintf("./%v.mdb", "تقرير")
 
 	if err := w.accessInterface.Connect(filePath); err != nil {
 		return fmt.Errorf("could not connect to Microsoft.ACE.OLEDB.12.0: %v", err)
@@ -59,7 +62,7 @@ func (w *Writer) WriteReport() error {
 
 // WriteSecretNumbers write secret numbers in microsoft access file
 func (w *Writer) WriteSecretNumbers() error {
-	filePath := fmt.Sprintf("./secret-numbers-%v.mdb", time.Now().UnixNano())
+	filePath := fmt.Sprintf("./%v.mdb", "سري")
 
 	if err := w.accessInterface.Connect(filePath); err != nil {
 		return fmt.Errorf("could not connect to Microsoft.ACE.OLEDB.12.0: %v", err)

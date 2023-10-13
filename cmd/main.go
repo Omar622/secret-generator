@@ -59,6 +59,7 @@ func interact() {
 
 		input, err := internal.ReadUInt("press enter to continue or enter 1 to exit\n")
 		if input == 1 && err == nil {
+			totalMR = append(totalMR, mr...)
 			break
 		}
 

@@ -69,17 +69,16 @@ func (sg *SecretGenerator) IsValid() bool {
 
 // MatchRanges match setting number ranges with secret number ranges randomly
 func (sg *SecretGenerator) MatchRanges() []internal.MatchingRange {
-	matchingRanges := []internal.MatchingRange{}
+	var matchingRanges []internal.MatchingRange
 
-	generateAgain := true
-	for generateAgain {
+	for {
 		matchingRanges = sg.generateMatchingRanges()
 
 		internal.PrintMatchingRanges(matchingRanges)
 
 		flag, err := internal.ReadUInt("enter 1 to write data into access files or enter anything else to generate another result: ")
 		if flag == 1 && err == nil {
-			generateAgain = false
+			break
 		}
 	}
 

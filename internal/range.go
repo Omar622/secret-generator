@@ -44,3 +44,16 @@ func Shuffle(ranges []Range, rnd *rand.Rand) []Range {
 
 	return result
 }
+
+// Split100 every range inside slice ranges of size 100. assume every range is divisible by 100
+func Split100(ranges []Range) []Range {
+	ranges100 := []Range{}
+
+	for _, r := range ranges {
+		for i := r.Start; i < r.End; i += 100 {
+			ranges100 = append(ranges100, Range{Start: i, End: i + 100 - 1})
+		}
+	}
+
+	return ranges100
+}

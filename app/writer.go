@@ -74,7 +74,7 @@ func (w *Writer) WriteSecretNumbers() error {
 	}
 
 	for _, g := range w.matchingRanges {
-		for i := uint(0); i < 50; i++ {
+		for i := uint(0); i < 100; i++ {
 			err := w.accessInterface.InsertRow(insertIntoNumbersSQL, []uint{
 				g.SettingNumberRange.Start + i, g.SecretNumberRange.Start + i,
 			})
